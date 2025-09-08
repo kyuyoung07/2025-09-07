@@ -8,87 +8,91 @@
 //유저가 1~100범위 밖에 숫자를 입력하면 알려준다. 기회를 깍지 않는다.
 //유저가 이미 입력한 숫자를 또 입력하면 알려준다. 기회를 깍지 않는다.
 
-let computerNum=0;
-let playButton=document.getElementById("play-button");
-let userInput=document.getElementById("user-input");
-let resultArea=document.getElementById("result-area");
-let resetButton=document.getElementById("reset-button");
-let chances=3;
-let gameOver=false;
-let chanceArea=document.getElementById("chance-area");
-let history=[];
-let rightAnswer=document.getElementById("right-answer");
-let gameOverMessage=document.getElementById("game-over-message");
+let computerNum = 0;
+let playButton = document.getElementById("play-button");
+let userInput = document.getElementById("user-input");
+let resultText = document.getElementById("result-text"); // 수정: result-text 요소 선택
+let resetButton = document.getElementById("reset-button");
+let chances = 3;
+let gameOver = false;
+let chanceArea = document.getElementById("chance-area");
+let history = [];
+let rightAnswer = document.getElementById("right-answer");
+let resultAreaImg = document.getElementById("main-img");
 
-playButton.addEventListener("click",play);
-resetButton.addEventListener("click",reset);
-userInput.addEventListener("focus",function(){userInput.value="";});
+playButton.addEventListener("click", play);
+resetButton.addEventListener("click", reset);
+userInput.addEventListener("focus", function() {
+    userInput.value = "";
+});
 
-function pickRandomNum(){
-    computerNum=Math.floor(Math.random()*100)+1;
-    console.log("정답",computerNum);
-    rightAnswer.textContent=`정답:${computerNum}`;
+function pickRandomNum() {
+    computerNum = Math.floor(Math.random() * 100) + 1;
+    console.log("정답", computerNum);
+    rightAnswer.textContent = `정답:${computerNum}`;
 }
 
-function play(){
-    let userValue=userInput.value;
-
-    if(userValue<1 || userValue>100){
-        resultArea.textContent="1과 100사이 숫자를 입력해주세요";
+function play() {
+    const userValue = userInput.value;
+    if (userValue < 1 || userValue > 100) {
+        resultText.textContent = "1과 100사이 숫자를 입력해주세요";
         return;
     }
 
-    if(history.includes(userValue)){
-        resultArea.textContent="이미 입력한 숫자입니다. 다른 숫자를 입력해주세요.";
+    if (history.includes(userValue)) {
+        resultText.textContent = "이미 입력한 숫자입니다. 다른 숫자를 입력해주세요.";
         return;
     }
 
     chances--;
-    chanceArea.textContent=`남은기회:${chances}번`;
-    console.log("chance",chances);
+    chanceArea.textContent = `남은 기회:${chances}번`;
+    console.log("chance", chances);
 
-    if(userValue<computerNum){
-        resultArea.textContent="UP!!";
-    }else if(userValue>computerNum){
-        resultArea.textContent="DOWN!!";
-    }else {
-        resultArea.textContent="맞추셨습니다!!";
-        gameOver=true;
+    if (userValue < computerNum) {
+        resultAreaImg.src = "image/up.png";
+        resultText.textContent = "UP!!";
+    } else if (userValue > computerNum) {
+        resultAreaImg.src = "image/down.png";
+        resultText.textContent = "DOWN!!";
+    } else {
+        resultAreaImg.src="image/right.png"
+        resultText.textContent = "맞추셨습니다!!";
+        gameOver = true;
     }
 
     history.push(userValue);
     console.log(history);
 
-    if(userValue != computerNum && chances<1){
-        gameOver=true;
+    if (userValue != computerNum && chances < 1) {
+        gameOver = true;
     }
 
-    if(gameOver){
-        playButton.disabled=true;
-        if(userValue != computerNum){
-        gameOverMessage.textContent = "GAME OVER!!";
-    }
+    if (gameOver) {
+        playButton.disabled = true;
+        if (userValue != computerNum) {
+            resultAreaImg.src="image/gameover.png"
+        }
     }
 }
 
-function reset(){
-    //user input창이 깨끗하게 정리되고
-    userInput.value="";
-    //새로운 번호가 생성되고
+function reset() {
+    // user input창이 깨끗하게 정리되고
+    userInput.value = "";
+    // 새로운 번호가 생성되고
     pickRandomNum();
-    //기회:3번
-    chances=3;
-    chanceArea.textContent=`남은기회:${chances}번`;
-    //go버튼 활성화
-    playButton.disabled=false;
-    //배열 비우기
-    history=[];
-    //게임 상태 초기화
-    gameOver=false;
-    //game over메시지 초기화
-    gameOverMessage.textContent="";
+    // 기회:3번
+    chances = 3;
+    chanceArea.textContent = `남은기회:${chances}번`;
+    // go버튼 활성화
+    playButton.disabled = false;
+    // 배열 비우기
+    history = [];
+    // 게임 상태 초기화
+    gameOver = false;
 
-    resultArea.textContent="결과값이 여기 나옵니다!";
+    resultAreaImg.src = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2864400/header.jpg?t=1711018815";
+
+    resultText.textContent = "과연 정답은 무엇일까?!?!";
 }
 
 pickRandomNum();
